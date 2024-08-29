@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "./built",
+    "allowJs": true,
+    "target": "es2015",
+    "moduleResolution": "bundler",
+    "baseUrl": "node_modules"
+  },
+  "include": ["./src/**/*"]
+}

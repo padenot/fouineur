@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "fx-profiler-plotter",
+  "description": "Plot profiler markers",
+  "version": "0.0.1",
+  "icons": {
+    "48": "icons/icon.png",
+    "96": "icons/icon2x.png"
+  },
+  "background": {
+    "scripts": ["background_script.js", "dist/fx-profiler-plotter.js"]
+  },
+
+  "browser_action": {
+    "default_icon": {
+      "48": "icons/icon.png",
+      "96": "icons/icon2x.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://profiler.firefox.com/*"],
+      "css": ["style.css"]
+    }
+  ],
+  "permissions": ["activeTab"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{b349f3bd-960a-4a6c-968c-509ba2459958}"
+    }
+  }
+}
