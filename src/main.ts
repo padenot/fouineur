@@ -2,9 +2,24 @@ import Plotly from "plotly.js-cartesian-dist";
 import { EditorView, minimalSetup } from "codemirror";
 import { EditorState } from "@codemirror/state";
 import { keymap, placeholder } from "@codemirror/view";
+import Draggable from "draggable";
 
+// DOM management utility functions
 var $ = document.querySelector.bind(document);
 var $$ = document.querySelectorAll.bind(document);
+
+function html(
+  name: string,
+  classList: string[],
+  parent?: HTMLElement,
+): HTMLElement {
+  var e = document.createElement(name);
+  classList.forEach((c) => e.classList.add(c));
+  if (parent) {
+    parent.appendChild(e);
+  }
+  return e;
+}
 
 // Expando for extensions + Firefox profiler expandos
 declare global {
@@ -140,8 +155,29 @@ histogram(remaining)
 histogram(diff)
 stats(diff)`;
 
-function close_cb(e) {
+function close_cb(e: Event) {
+  e.stopPropagation();
   document.querySelector(".cb-wrapper").remove();
+  return false;
+}
+
+// minimize plots and display a summary
+function minimize_cb(e: Event) {
+  e.stopPropagation();
+  var main = document.querySelector(".cb-main");
+  var minimized = main.classList.toggle("minimized");
+  if (minimized) {
+    $(".cb-root").stashed = $(".cb-root").style.height;
+    $(".cb-root").style.height = "3em";
+    $(".cb-root").style.resize = "none";
+    $(".cb-summary-text").innerText = $(".cm-content").textContent;
+  } else {
+    $(".cb-root").style.height = $(".cb-root").stashed;
+    delete $(".cb-root").stashed;
+    $(".cb-root").style.resize = "both";
+    $(".cb-summary-text").innerText = "";
+  }
+  return false;
 }
 
 // Create basic Div to display information. The page can contain multiple plots
@@ -151,22 +187,44 @@ function GetGraphicRootDivs() {
   var root = document.getElementById("cb-root");
   if (!rootWrapper || !root) {
     // wrapper: for style
-    rootWrapper = document.createElement("div");
-    rootWrapper.id = rootWrapper.className = "cb-wrapper";
-
+    rootWrapper = html("div", ["cb-wrapper"]);
     // root: where to insert elements
-    root = document.createElement("div");
-    root.id = root.className = "cb-root";
-    root.className = "cb-root";
-    rootWrapper.appendChild(root);
+    root = html("div", ["cb-root"], rootWrapper);
+    // drag thumb
+    var drag = html("div", ["cb-drag"], root);
+    var title = html("h1", ["cb-title"], drag);
+    title.innerText = "ploti";
+    var summary = html("div", ["cb-summary"], drag);
+    var summary_text = html("div", ["cb-summary-text"], summary);
+
+    let actions = html("div", ["cb-actions"], drag);
+
+    // minimize button
+    let minimize = html("div", ["cb-action"], actions);
+    minimize.innerText = "🗕";
+    minimize.addEventListener("click", minimize_cb);
 
     // close button
-    let close = document.createElement("button");
-    close.className = "cb-close";
+    let close = html("div", ["cb-action"], actions);
     close.innerText = "✖️";
-    root.appendChild(close);
-    close.onclick = close_cb;
+    close.addEventListener("click", close_cb);
+
     document.body.appendChild(rootWrapper);
+
+    var options = {
+      grid: 10,
+      onDragStart: function () {
+        rootWrapper.classList.add("dragged");
+      },
+      onDragEnd: function () {
+        rootWrapper.classList.remove("dragged");
+      },
+      handle: drag,
+      filterTarget(e) {
+        return !e.classList.contains("cb-action");
+      },
+    };
+    new Draggable(root, options);
   }
   return {
     rootWrapper,
@@ -225,7 +283,7 @@ function handle_processing(
     Plotly.newPlot(root, series, layout, { responsive: true });
   }
 
-  var plotRoot = document.createElement("div");
+  var plotRoot = html("div", []);
   let has_assignment = false;
   let rv = new Assignment();
   switch (processing.operator) {
@@ -352,7 +410,7 @@ function plot(data: Map<string, CoherentTimeSeries>, root: Element) {
       title: regexp,
     };
 
-    var plotRoot = document.createElement("div");
+    var plotRoot = html("div", []);
     Plotly.newPlot(plotRoot, graphSeries, layout, { responsive: true });
     root.appendChild(plotRoot);
   });
@@ -444,7 +502,7 @@ function get_data_from_regexp(spec: PlottingSpec, charts_root: Element) {
     });
   });
 
-  if ($("#autoplot").checked) {
+  if ($(".autoplot").checked) {
     plot(store.coherent, charts_root);
   }
 
@@ -499,7 +557,7 @@ function get_data_from_regexp(spec: PlottingSpec, charts_root: Element) {
  * histogram(remaining)
  * histogram(diff)
  * stats(diff)
-*/
+ */
 function parse_spec(text: string) {
   var lines = text.split("\n");
   var state = "matchers";
@@ -577,20 +635,17 @@ window._mainExpando = {} as RootObject;
 
 function openExtension() {
   const { rootWrapper, root } = GetGraphicRootDivs();
-  var autoplot = document.createElement("input");
-  autoplot.type = "checkbox";
-  autoplot.id = "autoplot";
-  root.appendChild(autoplot);
-  var autoplotLabel = document.createElement("label");
+  let main = html("div", ["cb-main"], root);
+  var autoplot = html("input", ["autoplot"], main);
+  (autoplot as HTMLInputElement).type = "checkbox";
+  var autoplotLabel = html("label", []);
   autoplotLabel.innerText = "Automaticaly plot from regular expression";
-  autoplotLabel.htmlFor = "autoplot";
-  root.appendChild(autoplotLabel);
-  var input = document.createElement("div");
-  input.className = "editor";
-  root.appendChild(input);
-  var charts = document.createElement("div");
-  charts.className = "charts";
-  root.appendChild(charts);
+  (autoplotLabel as HTMLLabelElement).htmlFor = "autoplot";
+  main.appendChild(autoplotLabel);
+
+  var input = html("div", ["editor"], main);
+
+  var charts = html("div", ["charts"], main)
 
   window._mainExpando.rootDiv = root;
 
