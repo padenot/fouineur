@@ -1,34 +1,36 @@
 {
-  "name": "fx-profiler-plotter",
+  "name": "fouineur",
   "version": "1.0.0",
   "description": "",
   "main": "background_script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-    "build": "vite build && cp dist/assets/index-*.js bundle.js",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/padenot/fx-profiler-plotter.git"
+    "url": "git+https://github.com/padenot/fouineur.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/padenot/fx-profiler-plotter/issues"
+    "url": "https://github.com/padenot/fouineur/issues"
   },
-  "homepage": "https://github.com/padenot/fx-profiler-plotter#readme",
+  "homepage": "https://github.com/padenot/fouineur#readme",
   "type": "module",
   "private": true,
   "devDependencies": {
+    "@types/firefox-webext-browser": "^120.0.4",
     "vite": "^5.4.2"
   },
   "dependencies": {
     "@codemirror/state": "github:codemirror/state",
+    "@types/firefox": "^0.0.34",
     "@types/plotly.js-basic-dist": "^1.54.4",
     "codemirror": "^6.0.1",
-    "plotly.js-cartesian-dist": "^2.34.0",
+    "draggable": "^4.2.0",
     "typescript": "^5.5.4"
   }
 }

@@ -1,14 +1,14 @@
 {
   "manifest_version": 2,
-  "name": "fx-profiler-plotter",
+  "name": "Fouineur",
   "description": "Plot profiler markers",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "icons": {
     "48": "icons/icon.png",
     "96": "icons/icon2x.png"
   },
   "background": {
-    "scripts": ["background_script.js", "dist/fx-profiler-plotter.js"]
+    "scripts": ["background_script.js"]
   },
 
   "browser_action": {
@@ -23,10 +23,10 @@
       "css": ["style.css"]
     }
   ],
-  "permissions": ["activeTab"],
+  "permissions": ["activeTab", "storage"],
   "browser_specific_settings": {
     "gecko": {
-      "id": "{b349f3bd-960a-4a6c-968c-509ba2459958}"
+      "id": "{15d00dcc-beb4-4c20-a85a-e51a16ab5a1c}"
     }
   }
 }

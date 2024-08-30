@@ -1,90 +1,149 @@
-.cb-wrapper {
-    top: 2em;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.4);
+.cb-drag {
+  display: flex;
+  justify-content:space-between;
+  cursor: grab;
+  background: black;
+  width: 100%;
+  color: white;
+  font-weight: 700;
+  padding: 0;
+  margin: 0;
+}
+.cb-title {
+  font-size: 1.5em;
+  flex: 1;
+  padding: 0;
+  margin: 0;
 }
 .cb-root {
-    width: 75%;
-    border: 2px solid black;
-    background-color: #fff;
-    box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.56);
-    height: 95%;
-    overflow: scroll;
+  width: 50vw;
+  height: 75vh;
+  font-family: monospace;
+  transition: opacity blur 0.5s;
+  border: 2px solid black;
+  background-color: #fff;
+  box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.56);
+  overflow: scroll;
+  resize: both;
 }
-.cb-root .cb-close:hover {
-    cursor: pointer;
+
+.cb-close:hover {
+  cursor: pointer;
 }
-.cb-root .cb-close {
-    background: #fff;
-    border: none;
-    text-align: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 100%;
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 15px;
-    color: white;
-    font-weight: bold;
-    text-decoration: none;
+
+.minimized {
+  display: none;
 }
-.cb-root .cb-plot {
-    width: 75%;
+
+.cb-action {
+  user-select: none;
+  flex: 1;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+  width: 1.5em;
+  height: 1.5em;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
 }
-.cb-root table {
-    border-top: 2px solid gray;
-    border-bottom: 2px solid gray;
-    border-collapse: collapse;
-    margin: 0 auto;
+
+table {
+  border-top: 2px solid gray;
+  border-bottom: 2px solid gray;
+  border-collapse: collapse;
 }
-.cb-root .cb-metrics {
-    width: 40%;
-    padding-top: 3em;
-    padding-bottom: 3em;
-    margin: 0 auto;
-    justify-content: center;
+.cb-stats {
+  width: 50%;
+  padding: 1em 7em;
+  justify-content: center;
 }
 .cb-root .cb-metrics td:last-child {
-    text-align: right;
+  text-align: right;
 }
 .cb-root p {
-    display: block;
-    margin: 1em auto;
-    text-align: center;
-    width: 100%;
+  display: block;
+  margin: 1em auto;
+  text-align: center;
+  width: 100%;
 }
 .cb-root h2 {
-    display: block;
-    width: 100%;
+  display: block;
+  width: 100%;
 }
 
 .cb-root h2 code {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .cb-title {
-    text-align: center;
+  height: 1.3em;
+  flex: 0;
+  padding-right: 1em;
 }
 
 .cb-select {
-    text-align: center;
+  text-align: center;
 }
 
 select:focus {
-    min-width: 150px;
-    width: auto;
+  min-width: 150px;
+  width: auto;
 }
 
-.editor .cm-editor {
-    min-height: 150px;
-    resize: vertical;
-    overflow: auto;
-    border: 1px dashed gray;
+.editor-and-variables {
+  display: flex;
+  justify-content: space-around;
+}
+
+.variables {
+  margin: 0 2em;
+}
+
+td:nth-child(2) {
+  padding: 0 0 0 3em;
+  text-align: right;
+}
+
+.editor {
+  min-height: 150px;
+  resize: both;
+  overflow: auto;
+  border: 1px dashed gray;
+  flex: 5;
+}
+
+.cb-summary {
+  flex: 10;
+  width: 20em;
+  margin-top: 0.5em;
+}
+
+.cb-summary-text {
+  font-weight:400;
+  font-size: 1em;
+  color: #bbb;
+  width: 20em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  display: inline-block;
+}
+
+.dragged {
+  opacity: 0.1;
+}
+
+.unsaved {
+  background: #fee;
+}
+
+.loading {
+  background: #ffe;
 }

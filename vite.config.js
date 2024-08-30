@@ -2,6 +2,9 @@ import { resolve } from "path";
 
 // vite.config.js
 export default {
+  server: {
+    hmr: false
+  },
   build: {
     minify: false,
     sourcemap: true,
@@ -15,7 +18,7 @@ export default {
     // extension, dismissing the popup, re-invoking the extension)
     rollupOptions: {
       input: "src/main.ts",
-      output: {
+     output: {
         inlineDynamicImports: true,
         format: "iife",
         name: "TBD",
