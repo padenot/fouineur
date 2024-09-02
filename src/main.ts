@@ -41,7 +41,7 @@ interface MarkerData {
   searchable?: boolean;
 }
 interface MarkerKV {
-  lable: string;
+  label: string;
   value: string;
 }
 interface MarkerPayload {
@@ -145,7 +145,7 @@ var PLACEHOLDER = `
   stats(numericvariable)
   `;
 
-var initial = `Popping ##frames frames. Remaining in ringbuffer ##remaining / ##total
+var initial2 = `Popping ##frames frames. Remaining in ringbuffer ##remaining / ##total
 Audio Sink ##position
 
 plot(frames, remaining)
@@ -153,7 +153,16 @@ diff = derivative(position)
 integral(frames)
 histogram(remaining)
 histogram(diff)
-stats(diff)`;
+stats(diff)
+fullness = eval(remaining / total)`;
+
+var initial = `budget
+Unprocessed
+
+load = div(Unprocessed, budget)
+percent_load = mul(load, 100)
+plot(percent_load)
+`;
 
 function close_cb(e: Event) {
   e.stopPropagation();
@@ -232,11 +241,55 @@ function GetGraphicRootDivs() {
   };
 }
 
+enum Operator {
+  add,
+  sub,
+  mul,
+  div,
+}
+
+// Perform a couple checks and then apply a math operator to each element of
+// lhs and rhs, returning the result.
+function arith(lhs: TimeSeries, rhs: TimeSeries, operator: Operator) {
+  // check if data coherent enough
+  if (lhs.x.length != rhs.x.length) {
+    return "Error: Not same size";
+  }
+  let lag = lhs.x[0] - rhs.x[0];
+  if (lag < 0) {
+    return "Error: right hand side earlier than left hand side";
+  }
+  let ONE_MS = 0.001;
+  if (lag > ONE_MS) {
+    return "Error: left and right hand side further than 1ms apart";
+  }
+
+  let zipf = (lhs: Float32Array, rhs: Float32Array, f: Function) =>
+    lhs.map((v1, i) => f(v1, rhs[i]));
+
+  let operators = [
+    (a: number, b: number) => a + b,
+    (a: number, b: number) => a - b,
+    (a: number, b: number) => a * b,
+    (a: number, b: number) => a / b,
+  ];
+
+  let f = operators[operator];
+
+  let len = lhs.x.length;
+  let rv = new Float32Array(len);
+  return zipf(lhs.values, rhs.values, f);
+}
+
+function display_error(str: string) {
+  console.warn(str);
+}
+
 function handle_processing(
   processing: Processing,
-  data: TimeSeries[],
+  data: (TimeSeries|number)[],
   root: Element,
-): Assignment | undefined {
+): Assignment | undefined | string {
   function plot_multiple(
     names: Array<string>,
     series: TimeSeries[],
@@ -254,6 +307,9 @@ function handle_processing(
     var layout = {
       title: `Values of ${names.join(", ")}`,
       xaxis: {
+        exponentformat: "none",
+      },
+      yaxis: {
         exponentformat: "none",
       },
     };
@@ -279,26 +335,67 @@ function handle_processing(
       xaxis: {
         exponentformat: "none",
       },
+      yaxis: {
+        exponentformat: "none",
+      },
     };
     Plotly.newPlot(root, series, layout, { responsive: true });
   }
+
+  // turn constant into arrays of right size
+  let expanded : TimeSeries[];
+  let args_name = processing.args.split(",").map((v) => v.trim());
+  // Split constants and series
+  let constants = new Map<string, number>;
+  let series = new Map<string, TimeSeries>;
+  data.forEach((e, i) => {
+    if (typeof e == "number") {
+      constants.set(args_name[i], e as number);
+    } else {
+      series.set(args_name[i], e as TimeSeries);
+    }
+  });
+
+  // We need at least one series
+  if (series.size == 0) {
+    return "Need at least one series to do something with an operator";
+  }
+
+
+  // We need values for x. Arbitrarily use the first time series
+  let constant_expanded = series;
+  let first_series = constant_expanded.entries().next().value[1];
+  constants.forEach((c) => {
+    let ts = new TimeSeries;
+    ts.idx_x = first_series.idx_x;
+    ts.x = first_series.x;
+    ts.values = new Float32Array(ts.x.length);
+    ts.values.fill(c);
+    constant_expanded.set(c.toString(), ts);
+  });
+
+  var inputs = [];
+  // Put the array in the same order as the args:
+  args_name.forEach((arg) => {
+    inputs.push(constant_expanded.get(arg));
+  });
 
   var plotRoot = html("div", []);
   let has_assignment = false;
   let rv = new Assignment();
   switch (processing.operator) {
     case "integral": {
-      if (data.length != 1) {
+      if (inputs.length != 1) {
         throw "Error, integral only support one argument";
       }
-      let values = data[0].values;
+      let values = inputs[0].values;
       var integrated = new Float32Array(values.length);
       var integral = 0;
       for (var i = 0; i < values.length; i++) {
         integral += values[i];
         integrated[i] = integral;
       }
-      var x = data[0].x;
+      var x = inputs[0].x;
       if (processing.assignment) {
         has_assignment = true;
         rv.name = processing.assignment;
@@ -309,16 +406,16 @@ function handle_processing(
       break;
     }
     case "derivative": {
-      if (data.length != 1) {
+      if (inputs.length != 1) {
         throw "Error, derivative only support one argument";
       }
-      let values = data[0].values;
+      let values = inputs[0].values;
       var differentiated = new Float32Array(values.length);
       differentiated[0] = 0;
       for (var i = 1; i < values.length; i++) {
         differentiated[i] = values[i] - values[i - 1];
       }
-      var x = data[0].x;
+      var x = inputs[0].x;
       if (processing.assignment) {
         has_assignment = true;
         rv.name = processing.assignment;
@@ -336,23 +433,26 @@ function handle_processing(
     case "histogram":
       let traces = [];
       let series_name = processing.args.split(",").map((v) => v.trim());
-      data.forEach((d, i) =>
+      inputs.forEach((d, i) =>
         traces.push({ x: d.values, type: "histogram", name: series_name[i] }),
       );
       var layoutHist = {
         title: `Histogram of ${processing.args}`,
+        xaxis: {
+          exponentformat: "none",
+        },
       };
       Plotly.newPlot(plotRoot, traces, layoutHist, { responsive: true });
       break;
     case "sum": {
-      let values = data[0].values;
+      let values = inputs[0].values;
       var sum = values.reduce((sum, next) => sum + next);
       plotRoot.innerHTML = `Sum of ${processing.args}: ${sum}`;
       break;
     }
     case "stats": {
       var result = {} as StatsResult;
-      let values = data[0].values;
+      let values = inputs[0].values;
       let copy_values = values.slice(0);
       copy_values.sort((a, b) => a - b);
       result.median = copy_values[Math.floor(copy_values.length / 2)];
@@ -381,7 +481,28 @@ function handle_processing(
     }
     case "plot": {
       let names = processing.args.split(",").map((e) => e.trim());
-      plot_multiple(names, data, plotRoot);
+      plot_multiple(names, inputs, plotRoot);
+      break;
+    }
+    case "add":
+    case "sub":
+    case "div":
+    case "mul": {
+      let names = processing.args.split(",").map((e) => e.trim());
+      let op = Operator[processing.operator];
+      let result = arith(inputs[0], inputs[1], op);
+      if (result instanceof String) {
+        display_error(result as string);
+        return;
+      }
+      let resultArray = result as Float32Array;
+      var x = inputs[0].x;
+      if (processing.assignment) {
+        has_assignment = true;
+        rv.name = processing.assignment;
+        rv.x = x;
+        rv.values = resultArray;
+      }
       break;
     }
     default:
@@ -394,17 +515,17 @@ function handle_processing(
   }
 }
 
-function plot(data: Map<string, CoherentTimeSeries>, root: Element) {
-  data.forEach((series, regexp) => {
+function plot(inputs: Map<string, CoherentTimeSeries>, root: Element) {
+  inputs.forEach((series, regexp) => {
     var graphSeries = [];
-    for (const [series_name, series_values] of Object.entries(series.values)) {
+    series.values.forEach((sv, name) => {
       graphSeries.push({
         x: series.x,
-        y: series_values,
-        name: series_name,
+        y: sv,
+        name: name,
         type: "scatter",
       });
-    }
+    });
 
     var layout = {
       title: regexp,
@@ -431,20 +552,41 @@ function get_data_from_regexp(spec: PlottingSpec, charts_root: Element) {
 
   function match_one(
     matcher: Matcher,
-    line: string,
+    marker: Marker,
     series: CoherentTimeSeries,
-    ts: number,
   ) {
-    let match = line.match(matcher.regexp);
-    if (match) {
-      if (series.time_base == -1) {
-        series.time_base = ts;
+    // Attempt to match both the name of the marker, and the text of the payload
+    let mmatch = marker.name.match(matcher.regexp);
+    let match = [];
+    if (mmatch) {
+      match = mmatch;
+    }
+    if (marker.data.name) {
+      let mmatch = marker.data.name.match(matcher.regexp);
+      if (mmatch) {
+        match.push(...mmatch.slice(1));
       }
-      series.x[series.idx_x] = ts - series.time_base;
-      for (var i = 1; i < match.length; i++) {
-        series.values.get(matcher.labels[i - 1])[series.idx_x] = parseFloat(
-          match[i],
-        );
+    }
+    if (match.length) {
+      if (series.time_base == -1) {
+        series.time_base = marker.start;
+      }
+      series.x[series.idx_x] = marker.start - series.time_base;
+      // No capture group, check if there's a duration. If not, use the start time
+      if (match.length == 1) {
+        if (marker.end) {
+          let duration = marker.end - marker.start;
+          series.values.get(matcher.labels[0])[series.idx_x] = duration;
+        } else {
+          series.values.get(matcher.labels[0])[series.idx_x] = marker.start;
+        }
+      } else {
+        // Capture groups, use that for values
+        for (var i = 0; i < match.length; i++) {
+          series.values.get(matcher.labels[i])[series.idx_x] = parseFloat(
+            match[i],
+          );
+        }
       }
       series.idx_x++;
     }
@@ -465,11 +607,8 @@ function get_data_from_regexp(spec: PlottingSpec, charts_root: Element) {
   });
   // run regexp on each marker, capturing the value, inserting in Y
   for (var i = 0; i < m.length; i++) {
-    if (!m[i].data || !m[i].data.name) {
-      continue;
-    }
     spec.matchers.forEach((e) => {
-      match_one(e, m[i].data.name, store.coherent.get(e.regexp), m[i].start);
+      match_one(e, m[i], store.coherent.get(e.regexp));
     });
   }
 
@@ -511,7 +650,12 @@ function get_data_from_regexp(spec: PlottingSpec, charts_root: Element) {
     let input_names = processing.args.split(",").map((e) => e.trim());
     let inputs = [];
     input_names.forEach((s) => {
-      inputs.push(store.flat.get(s));
+      let constant = parseFloat(s);
+      if (isNaN(constant)) {
+        inputs.push(store.flat.get(s));
+      } else {
+        inputs.push(constant);
+      }
     });
     var output = handle_processing(processing, inputs, charts_root);
     if (output) {
@@ -572,6 +716,10 @@ function parse_spec(text: string) {
       // Find all time series identifier, remove ##
       var labels = [...e.matchAll(reg)].map((e) => e[1]);
       var regexp_expanded = e.replace(reg, "(-?[0-9.]+)");
+      // If there's no capture group, the label will be the regexp itself
+      if (!labels.length) {
+        labels = [e];
+      }
       spec.matchers.push({
         regexp: regexp_expanded,
         labels: labels,
@@ -582,7 +730,7 @@ function parse_spec(text: string) {
       // aaa = bbb(ccc, ddd)
       // bbb(ccc)
       var proc =
-        /(?:([a-zA-Z0-9]+)? ?= ?)?([a-zA-Z0-9]+)[(]([a-zA-Z0-9, ]+)[)]/;
+        /(?:([a-zA-Z0-9_]+)? ?= ?)?([a-zA-Z0-9]+)[(]([a-zA-Z0-9:, _]+)[)]/;
 
       var matches = e.match(proc);
       if (!matches) {
@@ -607,6 +755,10 @@ function parse_spec(text: string) {
         "histogram",
         "stats",
         "plot",
+        "add",
+        "sub",
+        "mul",
+        "div",
       ];
       if (!valid_operators.includes(operator)) {
         console.error(`syntax error: ${operator} isn't in ${valid_operators}`);
@@ -645,7 +797,7 @@ function openExtension() {
 
   var input = html("div", ["editor"], main);
 
-  var charts = html("div", ["charts"], main)
+  var charts = html("div", ["charts"], main);
 
   window._mainExpando.rootDiv = root;
 

@@ -2,6 +2,9 @@ import { resolve } from "path";
 
 // vite.config.js
 export default {
+  server: {
+    hmr: false
+  },
   build: {
     minify: false,
     sourcemap: true,
