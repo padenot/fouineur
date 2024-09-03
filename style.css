@@ -56,11 +56,10 @@
 .cb-root .cb-plot {
   width: 75%;
 }
-.cb-root table {
+table {
   border-top: 2px solid gray;
   border-bottom: 2px solid gray;
   border-collapse: collapse;
-  margin: 0 auto;
 }
 .cb-root .cb-metrics {
   width: 40%;
@@ -102,11 +101,22 @@ select:focus {
   width: auto;
 }
 
-.editor .cm-editor {
+.editor-and-variables {
+  display: flex;
+  justify-content: space-around;
+}
+
+.variables {
+  flex: 0;
+  margin: 0 2em;
+}
+
+.editor {
   min-height: 150px;
   resize: vertical;
   overflow: auto;
   border: 1px dashed gray;
+  flex: 5;
 }
 
 .cb-summary {
