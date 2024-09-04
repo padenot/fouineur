@@ -822,8 +822,7 @@ function get_data_from_matchers(spec: PlottingSpec, charts_root: Element) {
     str += "<tbody></table>";
     variables.innerHTML = str;
   } else {
-    root.querySelector(".variables").innerHTML = "";
-  }
+
 }
 
 function parse_spec(text: string) {
