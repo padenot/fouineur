@@ -24,13 +24,9 @@ function html(
 // Expando for extensions + Firefox profiler expandos
 declare global {
   interface Window {
-    _mainExpandos: RootObject[];
     wrappedJSObject: any;
     filteredMarkers: Marker[];
   }
-}
-interface Window {
-  _mainExpando: RootObject[];
 }
 
 /* Firefox Profiler declarations, translated from flow */
@@ -73,12 +69,6 @@ class StatsResult {
   variance: number;
   min: number;
   max: number;
-}
-
-/* An object to store items to be accessed from the top scope */
-class RootObject {
-  editor: EditorView;
-  rootDiv: Element;
 }
 
 /* Multiple time series that have the same x, likely matched
@@ -213,14 +203,15 @@ function close_cb(e: Event) {
 
 declare global {
   interface HTMLDivElement {
-    stashed: any
+    stashed: any;
   }
 }
 
 // minimize plots and display a summary
 function minimize_cb(e: Event) {
   e.stopPropagation();
-  var root = ((e.target as HTMLDivElement).parentNode.parentNode.parentNode as HTMLDivElement);
+  var root = (e.target as HTMLDivElement).parentNode.parentNode
+    .parentNode as HTMLDivElement;
   var summary = root.querySelector(".cb-summary-text") as HTMLDivElement;
   let minimized = (root as HTMLDivElement).classList.contains("minimized");
   if (!minimized) {
@@ -242,49 +233,7 @@ function minimize_cb(e: Event) {
 // Create basic Div to display information. The page can contain multiple plots
 // at the same time.
 function GetGraphicRootDivs() {
-  // wrapper: for style
-  var rootWrapper = html("div", ["cb-wrapper"]);
-  // root: where to insert elements
-  var root = html("div", ["cb-root"], rootWrapper);
-  // drag thumb
-  var drag = html("div", ["cb-drag"], root);
-  var title = html("h1", ["cb-title"], drag);
-  title.innerText = "ploti";
-  var summary = html("div", ["cb-summary"], drag);
-  var summary_text = html("div", ["cb-summary-text"], summary);
-
-  let actions = html("div", ["cb-actions"], drag);
-
-  // minimize button
-  let minimize = html("div", ["cb-action"], actions);
-  minimize.innerText = "🗕";
-  minimize.addEventListener("click", minimize_cb);
-
-  // close button
-  let close = html("div", ["cb-action"], actions);
-  close.innerText = "✖️";
-  close.addEventListener("click", close_cb);
-
-  document.body.appendChild(rootWrapper);
-
-  var options = {
-    grid: 10,
-    onDragStart: function () {
-      rootWrapper.classList.add("dragged");
-    },
-    onDragEnd: function () {
-      rootWrapper.classList.remove("dragged");
-    },
-    handle: drag,
-    filterTarget(e) {
-      return !e.classList.contains("cb-action");
-    },
-  };
-  new Draggable(root, options);
-  return {
-    rootWrapper,
-    root,
-  };
+  return root;
 }
 
 enum Operator {
@@ -822,7 +771,8 @@ function get_data_from_matchers(spec: PlottingSpec, charts_root: Element) {
     str += "<tbody></table>";
     variables.innerHTML = str;
   } else {
-
+    root.querySelector(".variables").innerHTML = "";
+  }
 }
 
 function parse_spec(text: string) {
@@ -915,12 +865,46 @@ function doit(target: EditorView): boolean {
   return true;
 }
 
-if (!window._mainExpandos) {
-  window._mainExpandos = [];
-}
-
 function openExtension() {
-  const { rootWrapper, root } = GetGraphicRootDivs();
+  // root: where to insert elements
+  var root = html("div", ["cb-root"]);
+  // drag thumb
+  var drag = html("div", ["cb-drag"], root);
+  var title = html("h1", ["cb-title"], drag);
+  title.innerText = "ploti";
+  var summary = html("div", ["cb-summary"], drag);
+  var summary_text = html("div", ["cb-summary-text"], summary);
+
+  let actions = html("div", ["cb-actions"], drag);
+
+  // minimize button
+  let minimize = html("div", ["cb-action"], actions);
+  minimize.innerText = "🗕";
+  minimize.addEventListener("click", minimize_cb);
+
+  // close button
+  let close = html("div", ["cb-action"], actions);
+  close.innerText = "✖️";
+  close.addEventListener("click", close_cb);
+
+  document.body.appendChild(root);
+
+  var options = {
+    grid: 10,
+    onDragStart: function () {
+      root.classList.add("dragged");
+    },
+    onDragEnd: function () {
+      root.classList.remove("dragged");
+    },
+    handle: drag,
+    filterTarget(e: Event) {
+      return !(e.target as HTMLDivElement).classList.contains("cb-action");
+    },
+  };
+
+  new Draggable(root, options);
+
   let main = html("div", ["cb-main"], root);
   var autoplot = html("input", ["autoplot"], main);
   (autoplot as HTMLInputElement).type = "checkbox";
@@ -942,8 +926,6 @@ function openExtension() {
   var variables = html("div", ["variables"], editor_and_variables);
   var charts = html("div", ["charts"], main);
 
-  window._mainExpandos.push();
-
   new EditorView({
     state: EditorState.create({
       doc: get_initial(),
@@ -961,5 +943,4 @@ function openExtension() {
   });
 }
 
-openExtension();
 openExtension();
