@@ -50,3 +50,6 @@ rm -r plotly.js
 # License
 
 MPL 2.0
+
+The docs page uses a style-sheet and other resources modified from
+https://github.com/owickstrom/the-monospace-web/, that is MIT licensed.
