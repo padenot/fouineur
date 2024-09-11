@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Fouineur",
   "description": "Plot profiler markers",
-  "version": "0.0.3",
+  "version": "0.0.1",
   "icons": {
     "48": "icons/icon.png",
     "96": "icons/icon2x.png"
@@ -26,7 +26,7 @@
   "permissions": ["activeTab", "storage"],
   "browser_specific_settings": {
     "gecko": {
-      "id": "{15d00dcc-beb4-4c20-a85a-e51a16ab5a1c}"
+      "id": "{b0d22c14-a024-480b-9e7c-aab455be404b}"
     }
   }
 }
