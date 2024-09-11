@@ -1,15 +1,37 @@
+---
+title: Fouineur
+icon: ./icon2x.png
+subtitle: A Firefox extension for the Firefox Profiler
+author: Paul Adenot
+author-url: "https://paul.cx"
+date: 2024-09-07
+lang: en
+version: v0.0.1
+---
+
+---
+
 > French
 >
-> **Etymology**: from [*fouiner*](https://en.wiktionary.org/wiki/fouiner#French) \+‎ [*\-eur*](https://en.wiktionary.org/wiki/-eur#French).
+> **Etymology**: from [_fouiner_](https://en.wiktionary.org/wiki/fouiner#French) \+‎ [_\-eur_](https://en.wiktionary.org/wiki/-eur#French).
 >
 > **Pronunciation**: [IPA](https://en.wiktionary.org/wiki/Wiktionary:International_Phonetic_Alphabet)([key](https://en.wiktionary.org/wiki/Appendix:French_pronunciation)): /fwi.nœʁ/
 >
-> **Noun**: **fouineur** m (*plural* [**fouineurs**](https://en.wiktionary.org/wiki/fouineurs#French), *feminine* [**fouineuse**](https://en.wiktionary.org/wiki/fouineuse#French))
-> 
+> **Noun**: **fouineur** m (_plural_ [**fouineurs**](https://en.wiktionary.org/wiki/fouineurs#French), _feminine_ [**fouineuse**](https://en.wiktionary.org/wiki/fouineuse#French))
+>
 > 1. [busybody](https://en.wiktionary.org/wiki/busybody#English), [meddler](https://en.wiktionary.org/wiki/meddler#English), [nosy](https://en.wiktionary.org/wiki/nosy#English) person
 > 2. ([computing](https://en.wiktionary.org/wiki/computing#Noun), [rare](https://en.wiktionary.org/wiki/Appendix:Glossary#rare)) [hacker](https://en.wiktionary.org/wiki/hacker#English)
 
-![The icon of the extension](./icon2x.png)
+---
+
+# Downloads & install
+
+First things first: source is available at <https://github.com/padenot/fouineur>,
+and installing is done by grabbing the latest version from the
+[`signed/`](https://github.com/padenot/fouineur/tree/main/signed)
+directory.
+
+# Introduction
 
 This extension allows computing statistics and plotting data from [Firefox
 Profiler](https://profiler.firefox.com) markers, specifically all the markers
@@ -23,7 +45,7 @@ shown on the Marker Chart (this works when multiple threads are selected).
 
 Given a set of regular expressions, one per line, called **"matchers"** time
 series are either plotted directly, or made available for further processing.
-This is  done by writing statements in a small domain specific language, in a
+This is done by writing statements in a small domain specific language, in a
 section separated from the matchers by an empty line.
 
 ```
@@ -41,30 +63,16 @@ Firefox tool bar, when on any Firefox Profiler page.
 After having written a program, run it by hitting `ctrl+enter`, and save it
 with familiar icons. If a program has been saved before, running it saves it.
 
-It is possible to have multiple instances at the same time, and to drag,
+It is possible to have multiple instances opened at the same time, and to drag,
 minimize and resize each window, for example to have multiple visualization at
 once. Changing the thread selection doesn't impact a panel, unless its program
 is re-run.
 
-Source is available at <https://github.com/padenot/fouineur>, and
-installing is done by grabbing the latest version from the
-[`signed/`](https://github.com/padenot/fouineur/tree/main/signed)
-directory.
-
-## Table of contents
-
-- [Matchers, auto-plotting](#matchers-auto-plotting)
-  - [Examples](#examples)
-- [Processing](#processing)
-  - [Examples](#examples-1)
-
----
-
-## Matchers, auto-plotting
+# Matchers, auto-plotting
 
 Time series are list of `(x,y)` paris of numbers. `x` is a time value,
-corresponding to the start of a event, and `y` can be any value, including a
-duration, a count of something, a ratio, etc.
+corresponding to the start time of a event, and `y` can be any value, including
+a duration, a count of something, a ratio, etc.
 
 **Matchers** are a list of string that can match marker names,
 one per line. If a matcher matches a marker name or data payload, its duration,
@@ -103,16 +111,20 @@ have the marker start in `x`. `##name` is macro-expanded to `(-?[0-9.]+)`.
 Sometimes it is desirable to match exactly a marker, it is possible to do so
 using double-quotes:
 
-> RefreshDriverTick
+```
+RefreshDriverTick
+```
 
 will match `RefreshDriverTick` and `RefreshDriverTick waiting for paint`, but:
 
-> "RefreshDriverTick"
+```
+"RefreshDriverTick"
+```
 
 will only match `RefreshDriverTick`. The name of the time series will _not_
 include the double-quotes.
 
-### Examples
+## Examples
 
 ```
 Popping ##frames frames. Remaining in ringbuffer ##remaining / ##total
@@ -130,35 +142,35 @@ It is possible to automatically plot time series by ticking a checkbox on top of
 the editor available. In this case, they are grouped per matcher. It is also
 possible to be more explicit, using the processing section.
 
-## Processing
+# Processing
 
 The processing section allows taking time series and scalars as input, and
 produce time series and scalar values as output. Some functions are available, `ts`
 meaning "time series":
 
-| function                           | arity | argument types | return value type | description                                               |
-| ---------------------------------- | ----- | -------------- | ----------------- | --------------------------------------------------------- |
-| `plot(series1, series2, ...)`      | `n`   | `ts`, scalar   | none              | plot the series, on the same chart                        |
-| `histogram(series1, series2, ...)` | `n`   | `ts`           | none              | display histograms of the data                            |
-| `histoprob(series1, series2, ...)` | `n`   | `ts`           | none              | display histograms of the data, normalized                |
-| `histlog(series1, series2, ...)`   | `n`   | `ts`           | none              | display histograms of the data, log `y` axis              |
-| `stats(series)`                    | 1     | `ts`           | none              | display simple stats (mean, median, etc.)                 |
-| `integral(series)`                 | 1     | `ts`           | `ts`              | each value is added to all previous values                |
-| `derivative(series)`               | 1     | `ts`           | `ts`              | each value is subtracted to the previous value            |
-| `start_times(series)`              | 1     | `ts`           | `ts`              | extract the start times of a time series as a time series |
-| `add(a, b)`                        | 2     | `ts`, scalar   | `ts`              | add points, return a new series                           |
-| `sub(a, b)`                        | 2     | `ts`, scalar   | `ts`              | subtract points, return a new series                      |
-| `mul(a, b)`                        | 2     | `ts`, scalar   | `ts`              | multiply points, return a new series                      |
-| `div(a, b)`                        | 2     | `ts`, scalar   | `ts`              | divide points, return a new series                        |
-| `sum(a)`                           | `n`   | `ts`           | scalar            | outputs the sum of all values                             |
-| `max(series)`                      | 1     | `ts`           | scalar            | outputs the max of all values                             |
-| `min(series)`                      | 1     | `ts`           | scalar            | outputs the min of all values                             |
-| `stddev(series)`                   | 1     | `ts`           | scalar            | outputs the standard deviation the series                 |
-| `variance(series)`                 | 1     | `ts`           | scalar            | outputs the variance of the series                        |
-| `mean(series)`                     | 1     | `ts`           | scalar            | outputs the average (mean) of the series                  |
-| `geomean(series)`                  | 1     | `ts`           | scalar            | outputs the geometric mean of the series                  |
-| `median(series)`                   | 1     | `ts`           | scalar            | outputs the media the series                              |
-| `percentile(series, v)`            | 2     | `ts`, scalar   | scalar            | outputs the `v`th percentile of the series                |
+| function                 | arity | argument types | return type | description                                               |
+| ------------------------ | ----- | -------------- | ----------- | --------------------------------------------------------- |
+| `plot(s1, s2, ...)`      | `n`   | `ts`, scalar   | none        | plot the series, on the same chart                        |
+| `histogram(s1, s2, ...)` | `n`   | `ts`           | none        | display histograms of the data                            |
+| `histoprob(s1, s2, ...)` | `n`   | `ts`           | none        | display histograms of the data, normalized                |
+| `histlog(s1, s2, ...)`   | `n`   | `ts`           | none        | display histograms of the data, log `y` axis              |
+| `stats(series)`          | 1     | `ts`           | none        | display simple stats (mean, median, etc.)                 |
+| `integral(series)`       | 1     | `ts`           | `ts`        | each value is added to all previous values                |
+| `derivative(series)`     | 1     | `ts`           | `ts`        | each value is subtracted to the previous value            |
+| `start_times(series)`    | 1     | `ts`           | `ts`        | extract the start times of a time series as a time series |
+| `add(a, b)`              | 2     | `ts`, scalar   | `ts`        | add points, return a new series                           |
+| `sub(a, b)`              | 2     | `ts`, scalar   | `ts`        | subtract points, return a new series                      |
+| `mul(a, b)`              | 2     | `ts`, scalar   | `ts`        | multiply points, return a new series                      |
+| `div(a, b)`              | 2     | `ts`, scalar   | `ts`        | divide points, return a new series                        |
+| `sum(a)`                 | `n`   | `ts`           | scalar      | outputs the sum of all values                             |
+| `max(series)`            | 1     | `ts`           | scalar      | outputs the max of all values                             |
+| `min(series)`            | 1     | `ts`           | scalar      | outputs the min of all values                             |
+| `stddev(series)`         | 1     | `ts`           | scalar      | outputs the standard deviation the series                 |
+| `variance(series)`       | 1     | `ts`           | scalar      | outputs the variance of the series                        |
+| `mean(series)`           | 1     | `ts`           | scalar      | outputs the average (mean) of the series                  |
+| `geomean(series)`        | 1     | `ts`           | scalar      | outputs the geometric mean of the series                  |
+| `median(series)`         | 1     | `ts`           | scalar      | outputs the media the series                              |
+| `percentile(series, v)`  | 2     | `ts`, scalar   | scalar      | outputs the `v`th percentile of the series                |
 
 Arithmetic between series must have same number of point, and be at
 roughly the same time: if two markers have been output close in time, they are
@@ -194,7 +206,7 @@ plot(percent, ninefive, 50)
 
 Scalars are displayed with dashed red line.
 
-## Examples
+# Examples
 
 Plot some simple statistics about media playback audio clock jitter and
 ringbuffer fullness, as long as total frames played:
