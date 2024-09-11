@@ -1094,7 +1094,7 @@ function openExtension() {
   // drag thumb
   var drag = html("div", ["cb-drag"], root);
   var title = html("h1", ["cb-title"], drag);
-  title.innerText = "ploti";
+  title.innerText = "fouineur";
   var summary = html("div", ["cb-summary"], drag);
   var summary_text = html("div", ["cb-summary-text"], summary);
 

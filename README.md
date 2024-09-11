@@ -1,6 +1,6 @@
 # `fouineur`
 
-![The extension icon, weird data plotted on hand-draw xy axis](https://raw.githubusercontent.com/padenot/fouineur/master/icons/icon2x.png)
+![The extension icon, weird data plotted on hand-draw xy axis](https://raw.githubusercontent.com/padenot/fouineur/main/icons/icon2x.png)
 
 Plot and analyze [Firefox profiler](https://profiler.firefox.com/).
 
