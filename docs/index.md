@@ -1,11 +1,13 @@
-# `Fouineur`
-
 > French
+>
 > **Etymology**: from [*fouiner*](https://en.wiktionary.org/wiki/fouiner#French) \+‎ [*\-eur*](https://en.wiktionary.org/wiki/-eur#French).
+>
 > **Pronunciation**: [IPA](https://en.wiktionary.org/wiki/Wiktionary:International_Phonetic_Alphabet)([key](https://en.wiktionary.org/wiki/Appendix:French_pronunciation)): /fwi.nœʁ/
+>
 > **Noun**: **fouineur** m (*plural* [**fouineurs**](https://en.wiktionary.org/wiki/fouineurs#French), *feminine* [**fouineuse**](https://en.wiktionary.org/wiki/fouineuse#French))
-> > 1. [busybody](https://en.wiktionary.org/wiki/busybody#English), [meddler](https://en.wiktionary.org/wiki/meddler#English), [nosy](https://en.wiktionary.org/wiki/nosy#English) person
-> > 2. ([computing](https://en.wiktionary.org/wiki/computing#Noun), [rare](https://en.wiktionary.org/wiki/Appendix:Glossary#rare)) [hacker](https://en.wiktionary.org/wiki/hacker#English)
+> 
+> 1. [busybody](https://en.wiktionary.org/wiki/busybody#English), [meddler](https://en.wiktionary.org/wiki/meddler#English), [nosy](https://en.wiktionary.org/wiki/nosy#English) person
+> 2. ([computing](https://en.wiktionary.org/wiki/computing#Noun), [rare](https://en.wiktionary.org/wiki/Appendix:Glossary#rare)) [hacker](https://en.wiktionary.org/wiki/hacker#English)
 
 ![The icon of the extension](./icon2x.png)
 
