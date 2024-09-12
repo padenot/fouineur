@@ -236,7 +236,7 @@ histogram(percent_load)
 ```
 
 Analyse a `requestAnimationFrame` drawing loop, e.g. a javascript program
-drawing on a 2d canvas:
+drawing on a 2d canvas (try it on https://share.firefox.dev/47mbjda):
 
 ```
 // Match two markers: requestAnimationFrame, and the total rendering tick
