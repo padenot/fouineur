@@ -3,7 +3,7 @@ import { keymap, placeholder, lineNumbers } from "@codemirror/view";
 import { EditorView } from "codemirror";
 import Draggable from "draggable";
 import { history } from "@codemirror/commands";
-import { closeBrackets} from "@codemirror/autocomplete";
+import { closeBrackets } from "@codemirror/autocomplete";
 import { Layout, PlotData } from "plotly.js-basic-dist";
 import "./plotly-custom.min.js";
 
@@ -815,7 +815,7 @@ function parse_spec(text: string) {
     if (state == "matchers") {
       // change parsing state if a matcher has been matched
       // and an empty line is found
-      if (e.length == 0 && spec.matchers.length > 1) {
+      if (e.length == 0 && spec.matchers.length >= 1) {
         state = "processing";
         return;
       } else if (e.length == 0) {
@@ -915,7 +915,7 @@ function parse_spec(text: string) {
 // and localStorage (web)
 class Storage {
   public static get(key?: string): Promise<any> {
-    if (browser) {
+    if (window.browser) {
       return browser.storage.local.get(key);
     } else {
       if (!key) {
@@ -932,7 +932,7 @@ class Storage {
     }
   }
   public static set(key: string, value: string): Promise<any> {
-    if (browser) {
+    if (window.browser) {
       return browser.storage.local.set({ [key]: value });
     } else {
       localStorage.setItem(key, value);
