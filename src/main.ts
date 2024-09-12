@@ -915,7 +915,7 @@ function parse_spec(text: string) {
 // and localStorage (web)
 class Storage {
   public static get(key?: string): Promise<any> {
-    if (window.browser) {
+    if (typeof browser != "undefined") {
       return browser.storage.local.get(key);
     } else {
       if (!key) {
@@ -932,7 +932,7 @@ class Storage {
     }
   }
   public static set(key: string, value: string): Promise<any> {
-    if (window.browser) {
+    if (typeof browser != "undefined") {
       return browser.storage.local.set({ [key]: value });
     } else {
       localStorage.setItem(key, value);
