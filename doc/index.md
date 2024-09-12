@@ -1,9 +1,9 @@
 ---
 title: Fouineur
-icon: ./icon2x.png
 subtitle: A Firefox extension for the Firefox Profiler
 author: Paul Adenot
 author-url: "https://paul.cx"
+email: <padenot@mozilla.com>
 date: 2024-09-07
 lang: en
 version: v0.0.1
@@ -11,16 +11,16 @@ version: v0.0.1
 
 ---
 
-> French
->
-> **Etymology**: from [_fouiner_](https://en.wiktionary.org/wiki/fouiner#French) \+‎ [_\-eur_](https://en.wiktionary.org/wiki/-eur#French).
->
-> **Pronunciation**: [IPA](https://en.wiktionary.org/wiki/Wiktionary:International_Phonetic_Alphabet)([key](https://en.wiktionary.org/wiki/Appendix:French_pronunciation)): /fwi.nœʁ/
->
-> **Noun**: **fouineur** m (_plural_ [**fouineurs**](https://en.wiktionary.org/wiki/fouineurs#French), _feminine_ [**fouineuse**](https://en.wiktionary.org/wiki/fouineuse#French))
->
-> 1. [busybody](https://en.wiktionary.org/wiki/busybody#English), [meddler](https://en.wiktionary.org/wiki/meddler#English), [nosy](https://en.wiktionary.org/wiki/nosy#English) person
-> 2. ([computing](https://en.wiktionary.org/wiki/computing#Noun), [rare](https://en.wiktionary.org/wiki/Appendix:Glossary#rare)) [hacker](https://en.wiktionary.org/wiki/hacker#English)
+<div class=definition>
+**French**
+
+**Etymology**: from [_fouiner_](https://en.wiktionary.org/wiki/fouiner#French) \+‎ [_\-eur_](https://en.wiktionary.org/wiki/-eur#French).<br>
+**Pronunciation**: [IPA](https://en.wiktionary.org/wiki/Wiktionary:International_Phonetic_Alphabet)([key](https://en.wiktionary.org/wiki/Appendix:French_pronunciation)): /fwi.nœʁ/<br>
+**Noun**: **fouineur** m (_plural_ [**fouineurs**](https://en.wiktionary.org/wiki/fouineurs#French), _feminine_ [**fouineuse**](https://en.wiktionary.org/wiki/fouineuse#French))<br>
+
+1. [busybody](https://en.wiktionary.org/wiki/busybody#English), [meddler](https://en.wiktionary.org/wiki/meddler#English), [nosy](https://en.wiktionary.org/wiki/nosy#English) person
+2. ([computing](https://en.wiktionary.org/wiki/computing#Noun), [rare](https://en.wiktionary.org/wiki/Appendix:Glossary#rare)) [hacker](https://en.wiktionary.org/wiki/hacker#English)
+</div>
 
 ---
 
@@ -148,29 +148,29 @@ The processing section allows taking time series and scalars as input, and
 produce time series and scalar values as output. Some functions are available, `ts`
 meaning "time series":
 
-| function                 | arity | argument types | return type | description                                               |
-| ------------------------ | ----- | -------------- | ----------- | --------------------------------------------------------- |
-| `plot(s1, s2, ...)`      | `n`   | `ts`, scalar   | none        | plot the series, on the same chart                        |
-| `histogram(s1, s2, ...)` | `n`   | `ts`           | none        | display histograms of the data                            |
-| `histoprob(s1, s2, ...)` | `n`   | `ts`           | none        | display histograms of the data, normalized                |
-| `histlog(s1, s2, ...)`   | `n`   | `ts`           | none        | display histograms of the data, log `y` axis              |
-| `stats(series)`          | 1     | `ts`           | none        | display simple stats (mean, median, etc.)                 |
-| `integral(series)`       | 1     | `ts`           | `ts`        | each value is added to all previous values                |
-| `derivative(series)`     | 1     | `ts`           | `ts`        | each value is subtracted to the previous value            |
-| `start_times(series)`    | 1     | `ts`           | `ts`        | extract the start times of a time series as a time series |
-| `add(a, b)`              | 2     | `ts`, scalar   | `ts`        | add points, return a new series                           |
-| `sub(a, b)`              | 2     | `ts`, scalar   | `ts`        | subtract points, return a new series                      |
-| `mul(a, b)`              | 2     | `ts`, scalar   | `ts`        | multiply points, return a new series                      |
-| `div(a, b)`              | 2     | `ts`, scalar   | `ts`        | divide points, return a new series                        |
-| `sum(a)`                 | `n`   | `ts`           | scalar      | outputs the sum of all values                             |
-| `max(series)`            | 1     | `ts`           | scalar      | outputs the max of all values                             |
-| `min(series)`            | 1     | `ts`           | scalar      | outputs the min of all values                             |
-| `stddev(series)`         | 1     | `ts`           | scalar      | outputs the standard deviation the series                 |
-| `variance(series)`       | 1     | `ts`           | scalar      | outputs the variance of the series                        |
-| `mean(series)`           | 1     | `ts`           | scalar      | outputs the average (mean) of the series                  |
-| `geomean(series)`        | 1     | `ts`           | scalar      | outputs the geometric mean of the series                  |
-| `median(series)`         | 1     | `ts`           | scalar      | outputs the media the series                              |
-| `percentile(series, v)`  | 2     | `ts`, scalar   | scalar      | outputs the `v`th percentile of the series                |
+| function      | arity | input        | output | description                                               |
+| ------------- | ----- | ------------ | ------ | --------------------------------------------------------- |
+| `plot`        | `n`   | `ts`, scalar | none   | plot the series, on the same chart                        |
+| `histogram`   | `n`   | `ts`         | none   | display histograms of the data                            |
+| `histoprob`   | `n`   | `ts`         | none   | display histograms of the data, normalized                |
+| `histlog`     | `n`   | `ts`         | none   | display histograms of the data, log `y` axis              |
+| `stats`       | 1     | `ts`         | none   | display simple stats (mean, median, etc.)                 |
+| `integral`    | 1     | `ts`         | `ts`   | each value is added to all previous values                |
+| `derivative`  | 1     | `ts`         | `ts`   | each value is subtracted to the previous value            |
+| `start_times` | 1     | `ts`         | `ts`   | extract the start times of a time series as a time series |
+| `add`         | 2     | `ts`, scalar | `ts`   | add points, return a new series                           |
+| `sub`         | 2     | `ts`, scalar | `ts`   | subtract points, return a new series                      |
+| `mul`         | 2     | `ts`, scalar | `ts`   | multiply points, return a new series                      |
+| `div`         | 2     | `ts`, scalar | `ts`   | divide points, return a new series                        |
+| `sum`         | `n`   | `ts`         | scalar | outputs the sum of all values                             |
+| `max`         | 1     | `ts`         | scalar | outputs the max of all values                             |
+| `min`         | 1     | `ts`         | scalar | outputs the min of all values                             |
+| `stddev`      | 1     | `ts`         | scalar | outputs the standard deviation the series                 |
+| `variance`    | 1     | `ts`         | scalar | outputs the variance of the series                        |
+| `mean`        | 1     | `ts`         | scalar | outputs the average (mean) of the series                  |
+| `geomean`     | 1     | `ts`         | scalar | outputs the geometric mean of the series                  |
+| `median`      | 1     | `ts`         | scalar | outputs the media the series                              |
+| `percentile`  | 2     | `ts`, scalar | scalar | outputs the `v`th percentile of the series                |
 
 Arithmetic between series must have same number of point, and be at
 roughly the same time: if two markers have been output close in time, they are
@@ -204,12 +204,12 @@ ninefive = percentile(percent, 95)
 plot(percent, ninefive, 50)
 ```
 
-Scalars are displayed with dashed red line.
+Scalars are displayed with a dashed red line.
 
 # Examples
 
 Plot some simple statistics about media playback audio clock jitter and
-ringbuffer fullness, as long as total frames played:
+ring-buffer fullness, as long as total frames played:
 
 ```
 Audio Sink ##position

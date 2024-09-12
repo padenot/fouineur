@@ -28,7 +28,8 @@ Profiler</span>
   <tr>
     <th class="width-min">Author</th>
     <td class="width-auto"><a href="https://paul.cx"><cite>Paul
-Adenot</cite></a></td>
+Adenot</cite> </a>&lt;<a href="mailto:padenot@mozilla.com"
+class="email">padenot@mozilla.com</a>&gt;</td>
     <th class="width-min">License</th>
     <td>MPL 2.0</td>
   </tr>
@@ -48,7 +49,6 @@ id="toc-matchers-auto-plotting">Matchers, auto-plotting</a>
 </ul>
 </nav>
 <hr />
-<blockquote>
 <p>French</p>
 <p><strong>Etymology</strong>: from <a
 href="https://en.wiktionary.org/wiki/fouiner#French"><em>fouiner</em></a>
@@ -73,7 +73,6 @@ href="https://en.wiktionary.org/wiki/computing#Noun">computing</a>, <a
 href="https://en.wiktionary.org/wiki/Appendix:Glossary#rare">rare</a>)
 <a href="https://en.wiktionary.org/wiki/hacker#English">hacker</a></li>
 </ol>
-</blockquote>
 <hr />
 <h1 id="downloads-install">Downloads &amp; install</h1>
 <p>First things first: source is available at <a
@@ -174,164 +173,164 @@ input, and produce time series and scalar values as output. Some
 functions are available, <code>ts</code> meaning “time series”:</p>
 <table>
 <colgroup>
-<col style="width: 21%" />
-<col style="width: 4%" />
+<col style="width: 13%" />
+<col style="width: 5%" />
 <col style="width: 12%" />
-<col style="width: 9%" />
-<col style="width: 51%" />
+<col style="width: 6%" />
+<col style="width: 61%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>function</th>
 <th>arity</th>
-<th>argument types</th>
-<th>return type</th>
+<th>input</th>
+<th>output</th>
 <th>description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td><code>plot(s1, s2, ...)</code></td>
+<tr>
+<td><code>plot</code></td>
 <td><code>n</code></td>
 <td><code>ts</code>, scalar</td>
 <td>none</td>
 <td>plot the series, on the same chart</td>
 </tr>
-<tr class="even">
-<td><code>histogram(s1, s2, ...)</code></td>
+<tr>
+<td><code>histogram</code></td>
 <td><code>n</code></td>
 <td><code>ts</code></td>
 <td>none</td>
 <td>display histograms of the data</td>
 </tr>
-<tr class="odd">
-<td><code>histoprob(s1, s2, ...)</code></td>
+<tr>
+<td><code>histoprob</code></td>
 <td><code>n</code></td>
 <td><code>ts</code></td>
 <td>none</td>
 <td>display histograms of the data, normalized</td>
 </tr>
-<tr class="even">
-<td><code>histlog(s1, s2, ...)</code></td>
+<tr>
+<td><code>histlog</code></td>
 <td><code>n</code></td>
 <td><code>ts</code></td>
 <td>none</td>
 <td>display histograms of the data, log <code>y</code> axis</td>
 </tr>
-<tr class="odd">
-<td><code>stats(series)</code></td>
+<tr>
+<td><code>stats</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td>none</td>
 <td>display simple stats (mean, median, etc.)</td>
 </tr>
-<tr class="even">
-<td><code>integral(series)</code></td>
+<tr>
+<td><code>integral</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td><code>ts</code></td>
 <td>each value is added to all previous values</td>
 </tr>
-<tr class="odd">
-<td><code>derivative(series)</code></td>
+<tr>
+<td><code>derivative</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td><code>ts</code></td>
 <td>each value is subtracted to the previous value</td>
 </tr>
-<tr class="even">
-<td><code>start_times(series)</code></td>
+<tr>
+<td><code>start_times</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td><code>ts</code></td>
 <td>extract the start times of a time series as a time series</td>
 </tr>
-<tr class="odd">
-<td><code>add(a, b)</code></td>
+<tr>
+<td><code>add</code></td>
 <td>2</td>
 <td><code>ts</code>, scalar</td>
 <td><code>ts</code></td>
 <td>add points, return a new series</td>
 </tr>
-<tr class="even">
-<td><code>sub(a, b)</code></td>
+<tr>
+<td><code>sub</code></td>
 <td>2</td>
 <td><code>ts</code>, scalar</td>
 <td><code>ts</code></td>
 <td>subtract points, return a new series</td>
 </tr>
-<tr class="odd">
-<td><code>mul(a, b)</code></td>
+<tr>
+<td><code>mul</code></td>
 <td>2</td>
 <td><code>ts</code>, scalar</td>
 <td><code>ts</code></td>
 <td>multiply points, return a new series</td>
 </tr>
-<tr class="even">
-<td><code>div(a, b)</code></td>
+<tr>
+<td><code>div</code></td>
 <td>2</td>
 <td><code>ts</code>, scalar</td>
 <td><code>ts</code></td>
 <td>divide points, return a new series</td>
 </tr>
-<tr class="odd">
-<td><code>sum(a)</code></td>
+<tr>
+<td><code>sum</code></td>
 <td><code>n</code></td>
 <td><code>ts</code></td>
 <td>scalar</td>
 <td>outputs the sum of all values</td>
 </tr>
-<tr class="even">
-<td><code>max(series)</code></td>
+<tr>
+<td><code>max</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td>scalar</td>
 <td>outputs the max of all values</td>
 </tr>
-<tr class="odd">
-<td><code>min(series)</code></td>
+<tr>
+<td><code>min</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td>scalar</td>
 <td>outputs the min of all values</td>
 </tr>
-<tr class="even">
-<td><code>stddev(series)</code></td>
+<tr>
+<td><code>stddev</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td>scalar</td>
 <td>outputs the standard deviation the series</td>
 </tr>
-<tr class="odd">
-<td><code>variance(series)</code></td>
+<tr>
+<td><code>variance</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td>scalar</td>
 <td>outputs the variance of the series</td>
 </tr>
-<tr class="even">
-<td><code>mean(series)</code></td>
+<tr>
+<td><code>mean</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td>scalar</td>
 <td>outputs the average (mean) of the series</td>
 </tr>
-<tr class="odd">
-<td><code>geomean(series)</code></td>
+<tr>
+<td><code>geomean</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td>scalar</td>
 <td>outputs the geometric mean of the series</td>
 </tr>
-<tr class="even">
-<td><code>median(series)</code></td>
+<tr>
+<td><code>median</code></td>
 <td>1</td>
 <td><code>ts</code></td>
 <td>scalar</td>
 <td>outputs the media the series</td>
 </tr>
-<tr class="odd">
-<td><code>percentile(series, v)</code></td>
+<tr>
+<td><code>percentile</code></td>
 <td>2</td>
 <td><code>ts</code>, scalar</td>
 <td>scalar</td>

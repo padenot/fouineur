@@ -1,5 +1,10 @@
-:root {
-  --font-family: monospace;
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("BerkeleyMono-Regular.woff2") format("woff2")
+}
+
+html {
+  --font-family: "Berkeley Mono";
   --line-height: 1.20rem;
   --border-thickness: 2px;
   --text-color: #000;
@@ -17,15 +22,6 @@
   font-style: normal;
   font-variant-numeric: tabular-nums lining-nums;
   font-size: 16px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text-color: #fff;
-    --text-color-alt: #aaa;
-    --background-color: #000;
-    --background-color-alt: #111;
-  }
 }
 
 * {
@@ -55,11 +51,24 @@ body {
   padding: var(--line-height) 2ch;
   line-height: var(--line-height);
   overflow-x: hidden;
+  padding: 4ch;
 }
 
 p, h1, h2, h3, h4, blockquote, img, nav, hr, pre, ul, ol, table[class=header] {
   margin: 2ch auto;
   max-width: calc(min(50rem, round(down, 100%, 1ch)));
+}
+
+table.header {
+  margin-bottom: 6ch;
+}
+
+#downloads-install {
+  margin-top: 4ch;
+}
+
+nav#TOC {
+  margin-bottom: 6ch;
 }
 
 @media screen and (max-width: 480px) {
@@ -138,13 +147,33 @@ sub {
   font-size: .75rem;
 }
 
-table {
+table:not(.header) {
   margin: 5rem auto;
-  max-width: calc(min(75rem, round(down, 100%, 1ch)));
+  margin-top: 2rem;
+  max-width: calc(min(65rem, round(down, 100%, 1ch)));
   position: relative;
   top: calc(var(--line-height) / 2);
   width: calc(round(down, 100%, 1ch));
   border-collapse: collapse;
+}
+
+table:not(.header) td:nth-child(2) {
+  text-align: center;
+}
+table:not(.header) td:nth-child(3) {
+  text-align: center;
+}
+table:not(.header) td:nth-child(4) {
+  text-align: center;
+}
+table:not(.header) th:nth-child(2) {
+  text-align: center;
+}
+table:not(.header) th:nth-child(3) {
+  text-align: center;
+}
+table:not(.header) th:nth-child(4) {
+  text-align: center;
 }
 
 th, td {
@@ -237,11 +266,11 @@ figure pre {
 }
 
 code {
-  font-family: "courier";
+  font-family: "Courier New";
 }
 
 pre {
-  font-family: "courier";
+  font-family: "Courier New";
   border-left: var(--border-thickness) solid var(--text-color);
   padding-left: 4ch;
 }
@@ -469,3 +498,13 @@ blockquote {
 .abstract {
   padding: 5ch 0;
 }
+
+.definition p, .definition a, .definition strong {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+br {
+  margin-top: 0ch;
+}
+
