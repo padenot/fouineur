@@ -6,7 +6,7 @@ Plot and analyze [Firefox profiler](https://profiler.firefox.com/).
 
 # Installation
 
-Install the latest `.xpi` from the `dist` directory. This is signed by
+Install the latest `.xpi` from the `signed` directory. This is signed by
 <https://addons.mozilla.org>.
 
 # Usage
