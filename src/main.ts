@@ -838,12 +838,12 @@ function parse_spec(text: string) {
       }
      
       // Find field matches and strip them out completely.
-      var reg = /###([a-zA-Z0-9]+)/g;
+      var reg = /###([a-zA-Z0-9_]+)/g;
       var fields = [...e.matchAll(reg)].map((e) => e[1]);
       var regexp_expanded = e.replace(reg, "").trim();
 
 
-      reg = /##([a-zA-Z0-9]+)/g;
+      reg = /##([a-zA-Z0-9_]+)/g;
       // Find all time series identifier, remove ##
       var labels = [...regexp_expanded.matchAll(reg)].map((e) => e[1]);
       regexp_expanded = regexp_expanded.replace(reg, "(-?[0-9.]+)");
