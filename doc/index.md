@@ -108,6 +108,17 @@ Audio Sink 0.08
 and store the value in a time series called `position`. This time series will
 have the marker start in `x`. `##name` is macro-expanded to `(-?[0-9.]+)`.
 
+Some markers contain fields in a structured format.  These can be captured
+using 3 hash symbols.
+
+Purge ###pages ###opts
+
+(this marker isn't in mozilla-central at this time).  A match with field
+captures works by first matching against the name or description of the
+marker as normal, and if it matches then selecting any matching fields from
+the `data` field of the marker.  Place these "field captures" at the end of
+the match line so that whitespace will be trimmed after they're removed.
+
 Sometimes it is desirable to match exactly a marker, it is possible to do so
 using double-quotes:
 
