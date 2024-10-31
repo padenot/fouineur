@@ -121,11 +121,13 @@ class Processing {
   assignment?: string;
 }
 
-/* A matcher is a regexp, and a set of label corresponding to
- * match groups in the regexp. */
+/* A matcher is a regexp, set of labels corresponding to
+ * match groups in the regexp and a list of fields to extract from the
+ * payload. */
 class Matcher {
   regexp: string;
   labels: string[];
+  fields: string[];
 }
 
 /* Representation of the parsed plotting specification: a list
@@ -689,6 +691,15 @@ function match_one(
         );
       }
     }
+
+    // Test the fields and see which match.
+    for (var i = 0; i < matcher.fields.length; i++) {
+      var f = matcher.fields[i]
+      if (marker.data[f]) {
+        series.values.get(f)[series.idx_x] =
+          parseFloat(marker.data[f]);
+      }
+    }
     series.idx_x++;
   }
 }
@@ -714,6 +725,9 @@ function get_data_from_matchers(spec: PlottingSpec) {
     obj.values = new Map<string, Float32Array>();
     e.labels.forEach((label: string) => {
       obj.values.set(label, new Float32Array(m.length));
+    });
+    e.fields.forEach((field: string) => {
+      obj.values.set(field, new Float32Array(m.length));
     });
     obj.time_base = -1;
     coherent.set(e.regexp, obj);
@@ -822,10 +836,17 @@ function parse_spec(text: string) {
         // comments or whitespace only before matchers
         return;
       }
-      var reg = /##([a-zA-Z0-9]+)/g;
+     
+      // Find field matches and strip them out completely.
+      var reg = /###([a-zA-Z0-9]+)/g;
+      var fields = [...e.matchAll(reg)].map((e) => e[1]);
+      var regexp_expanded = e.replace(reg, "").trim();
+
+
+      reg = /##([a-zA-Z0-9]+)/g;
       // Find all time series identifier, remove ##
-      var labels = [...e.matchAll(reg)].map((e) => e[1]);
-      var regexp_expanded = e.replace(reg, "(-?[0-9.]+)");
+      var labels = [...regexp_expanded.matchAll(reg)].map((e) => e[1]);
+      regexp_expanded = regexp_expanded.replace(reg, "(-?[0-9.]+)");
 
       let regexp = regexp_expanded;
       let strip_first_last = false;
@@ -840,14 +861,15 @@ function parse_spec(text: string) {
       // If there's no capture group, the label will be the regexp itself
       if (!labels.length) {
         if (strip_first_last) {
-          labels = [e.slice(1, -1)];
+          labels = [regexp_expanded.slice(1, -1)];
         } else {
-          labels = [e];
+          labels = [regexp_expanded];
         }
       }
       spec.matchers.push({
         regexp: regexp,
         labels: labels,
+        fields: fields,
       });
     } else if (state == "processing") {
       // Matches:
