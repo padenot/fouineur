@@ -1212,7 +1212,7 @@ function openExtension() {
         }),
         keymap.of([
           {
-            key: "Ctrl-Enter",
+            key: "Mod-Enter",
             run: doit,
           },
         ]),
