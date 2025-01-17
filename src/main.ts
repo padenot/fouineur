@@ -253,7 +253,7 @@ enum Operator {
 
 // Perform a couple checks and then apply a math operator to each element of
 // lhs and rhs, returning the result.
-function arith(lhs: Variable, rhs: Variable, operator: Operator) {
+function arith(lhs: Variable, rhs: Variable, operator: Operator): Float32Array | Number | String {
   let zipf = (lhs: Float32Array, rhs: Float32Array, f: Function) =>
     lhs.map((v1, i) => f(v1, rhs[i]));
 
@@ -504,7 +504,7 @@ function handle_processing(
       Plotly.newPlot(plotRoot, traces, layoutHist, { responsive: true });
       break;
     case "sum": {
-      let values = inputs[0].value;
+      let values = inputs[0].value.values;
       var sum = values.reduce((sum: number, next: number) => sum + next);
       plotRoot.innerHTML = `Sum of ${processing.args}: ${sum}`;
       rv.name = processing.assignment;
@@ -539,14 +539,20 @@ function handle_processing(
       let names = processing.args.split(",").map((e) => e.trim());
       let op = Operator[processing.operator];
       let result = arith(inputs[0], inputs[1], op);
-      if (result instanceof String) {
-        display_error(result as string);
+      if (typeof result == "string") {
+        display_error(result);
         return;
       }
-      let resultArray = result as Float32Array;
-      var x = inputs[0].as_series().x;
-      rv.name = processing.assignment;
-      rv.value = new TimeSeries(x, resultArray, x.length);
+      if (typeof result == "number") {
+        rv.name = processing.assignment;
+        rv.value = result;
+        plotRoot.innerHTML = `${processing.operator}(${processing.args}) = ${result}`;
+      } else {
+        let resultArray = result as Float32Array;
+        var x = inputs[0].as_series().x;
+        rv.name = processing.assignment;
+        rv.value = new TimeSeries(x, resultArray, x.length);
+      }
       break;
     }
     case "median": {
@@ -776,7 +782,7 @@ function get_data_from_matchers(spec: PlottingSpec) {
   return store;
 }
 
-function autoplot() {}
+function autoplot() { }
 
 function processing(spec: PlottingSpec, store: Store, root: HTMLElement) {
   while (spec.processing.length) {
@@ -836,7 +842,7 @@ function parse_spec(text: string) {
         // comments or whitespace only before matchers
         return;
       }
-     
+
       // Find field matches and strip them out completely.
       var reg = /###([a-zA-Z0-9_]+)/g;
       var fields = [...e.matchAll(reg)].map((e) => e[1]);
