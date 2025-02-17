@@ -31,6 +31,7 @@
     "@types/plotly.js-basic-dist": "^1.54.4",
     "codemirror": "^6.0.1",
     "draggable": "^4.2.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "web-ext": "^8.4.0"
   }
 }
