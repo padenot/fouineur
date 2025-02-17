@@ -8,4 +8,4 @@ build: dist/main.js
 
 publish: dist/main.js
 	echo ${AMO_JWT_ISSUER}
-	web-ext sign --api-key=${AMO_JWT_ISSUER} --api-secret=${AMO_JWT_SECRET} --channel unlisted --ignore-files $(ignored) "dist/main.js.map"
+	web-ext sign --api-key=${AMO_JWT_ISSUER} --api-secret=${AMO_JWT_SECRET} --channel=listed --ignore-files $(ignored) "dist/main.js.map"

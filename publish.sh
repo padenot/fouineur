@@ -20,4 +20,4 @@ then
   exit 1
 fi
 
-web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET --channel unlisted --ignore-files $IGNORED
+web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET --channel=listed --ignore-files $IGNORED
