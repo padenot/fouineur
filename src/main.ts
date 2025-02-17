@@ -659,6 +659,7 @@ function match_one(
   marker: Marker,
   series: CoherentTimeSeries,
 ) {
+  var isCapturingValues = matcher.regexp.indexOf("(-?[0-9.]+)") != -1;
   // Attempt to match both the name of the marker, and the text of the payload
   let mmatch = marker.name.match(matcher.regexp);
   let match = [];
@@ -686,7 +687,7 @@ function match_one(
     }
     series.x[series.idx_x] = marker.start - series.time_base;
     // No capture group, check if there's a duration. If not, use the start time
-    if (match.length == 1) {
+    if (match.length == 1 && !isCapturingValues) {
       if (marker.end) {
         let duration = marker.end - marker.start;
         series.values.get(matcher.labels[0])[series.idx_x] = duration;
