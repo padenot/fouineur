@@ -705,10 +705,9 @@ function match_one(
 
     // Test the fields and see which match.
     for (var i = 0; i < matcher.fields.length; i++) {
-      var f = matcher.fields[i]
+      var f = matcher.fields[i];
       if (marker.data[f]) {
-        series.values.get(f)[series.idx_x] =
-          parseFloat(marker.data[f]);
+        series.values.get(f)[series.idx_x] = parseFloat(marker.data[f]);
       }
     }
     series.idx_x++;
