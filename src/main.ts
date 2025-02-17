@@ -253,7 +253,11 @@ enum Operator {
 
 // Perform a couple checks and then apply a math operator to each element of
 // lhs and rhs, returning the result.
-function arith(lhs: Variable, rhs: Variable, operator: Operator): Float32Array | Number | String {
+function arith(
+  lhs: Variable,
+  rhs: Variable,
+  operator: Operator,
+): Float32Array | Number | String {
   let zipf = (lhs: Float32Array, rhs: Float32Array, f: Function) =>
     lhs.map((v1, i) => f(v1, rhs[i]));
 
@@ -782,7 +786,7 @@ function get_data_from_matchers(spec: PlottingSpec) {
   return store;
 }
 
-function autoplot() { }
+function autoplot() {}
 
 function processing(spec: PlottingSpec, store: Store, root: HTMLElement) {
   while (spec.processing.length) {
@@ -847,7 +851,6 @@ function parse_spec(text: string) {
       var reg = /###([a-zA-Z0-9_]+)/g;
       var fields = [...e.matchAll(reg)].map((e) => e[1]);
       var regexp_expanded = e.replace(reg, "").trim();
-
 
       reg = /##([a-zA-Z0-9_]+)/g;
       // Find all time series identifier, remove ##
