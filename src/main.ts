@@ -1133,7 +1133,9 @@ function openExtension() {
 
   // minimize button
   let minimize = html("div", ["cb-action"], actions);
-  minimize.innerText = "🗕";
+  minimize.innerHTML =
+    '<svg width=16 height=16 viewBox="0 0 16 16"><path d="M3 11h10v3H3z" fill="#464646"/></svg>';
+
   minimize.addEventListener("click", minimize_cb);
 
   // close button
