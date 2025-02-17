@@ -1,5 +1,6 @@
 {
   "version": { "license": "MPL-2.0" },
+  "categories": { "firefox": ["web-development"] },
   "requires_payment": false,
   "homepage": {
     "en-US": "https://padenot.github.io/fouineur"
